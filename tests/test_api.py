@@ -105,6 +105,7 @@ def response(mime, content):
 @pytest.mark.parametrize(
     "mime,content",
     [("text/html", b"blocked"), ("audio/mpeg", b""), ("audio/mpeg", b"a" * (MAX_MEDIA_BYTES + 1))],
+    ids=["html-response", "empty-audio", "oversize-audio"],
 )
 def test_invalid_download_never_enters_cache(tmp_path, mime, content):
     client = Client(tmp_path)
