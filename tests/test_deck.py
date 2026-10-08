@@ -1,6 +1,7 @@
 import json
 import sqlite3
 import zipfile
+from contextlib import closing
 
 import pytest
 
@@ -40,7 +41,7 @@ def unpack(path, tmp_path):
             assert z.read(archive_name) == b"test asset"
         db = tmp_path / (path.stem + ".sqlite")
         db.write_bytes(z.read("collection.anki2"))
-    with sqlite3.connect(db) as con:
+    with closing(sqlite3.connect(db)) as con:
         notes = con.execute("select guid, flds from notes order by guid").fetchall()
         cards = con.execute("select count(*) from cards").fetchone()[0]
     return notes, cards, manifest
